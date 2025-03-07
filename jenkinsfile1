@@ -1,12 +1,41 @@
 pipeline {
-  agent {
-    docker { image 'node:16-alpine' }
-  }
-  stages {
-    stage('Test') {
-      steps {
-        sh 'node --version'
-      }
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                // Clone from the public GitHub repository without credentials
+                git url: 'https://github.com/your-username/sample-project.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Example build step using Maven
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Example test step
+                sh 'mvn test'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Example deployment step (adjust this as needed)
+                sh 'scp target/your-app.war user@server:/path/to/deploy'
+            }
+        }
     }
-  }
+
+    post {
+        always {
+            // Archive build artifacts and test results
+            archiveArtifacts artifacts: '**/target/*.war', allowEmptyArchive: true
+            junit '**/target/surefire-reports/*.xml'
+        }
+    }
 }
