@@ -4,14 +4,14 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                // Clone from the public GitHub repository without credentials
-                git url: 'https://github.com/your-username/sample-project.git'
+                // Use the 'main' branch for the checkout
+                git branch: 'main', url: 'https://github.com/Sharath1863/jenkins-docker.git'
             }
         }
 
         stage('Build') {
             steps {
-                // Example build step using Maven
+                // Example build step
                 sh 'mvn clean install'
             }
         }
@@ -25,16 +25,16 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                // Example deployment step (adjust this as needed)
-                sh 'scp target/your-app.war user@server:/path/to/deploy'
+                // Example deploy step
+                echo 'Deploying...'
             }
         }
     }
 
     post {
         always {
-            // Archive build artifacts and test results
-            archiveArtifacts artifacts: '**/target/*.war', allowEmptyArchive: true
+            // Archive artifacts and record test results
+            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
             junit '**/target/surefire-reports/*.xml'
         }
     }
